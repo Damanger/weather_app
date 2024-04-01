@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:weather_app/models/weather_model.dart';
 import '../services/weather_services.dart';
@@ -7,6 +9,38 @@ class WeatherPage extends StatefulWidget {
 
   @override
   State<WeatherPage> createState() => _WeatherPageState();
+}
+
+class DateTimeWidget extends StatefulWidget {
+  const DateTimeWidget({super.key});
+
+  @override
+  _DateTimeWidgetState createState() => _DateTimeWidgetState();
+}
+
+class _DateTimeWidgetState extends State<DateTimeWidget> {
+  late String _currentDateTime;
+
+  @override
+  void initState() {
+    super.initState();
+    _updateDateTime();
+  }
+
+  void _updateDateTime() {
+    setState(() {
+      _currentDateTime = DateTime.now().toString().substring(0, 16);//Date from year to minutes
+    });
+    Timer(const Duration(seconds: 1), _updateDateTime);//Updating every second for minutes
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      _currentDateTime,
+      style: const TextStyle(fontSize: 20),
+    );
+  }
 }
 
 class _WeatherPageState extends State<WeatherPage> {
@@ -112,14 +146,18 @@ class _WeatherPageState extends State<WeatherPage> {
               if (_weather != null)
                 Text(
                   '${_weather?.temperature.round()}°C',
-                  style: const TextStyle(fontSize: 24,),
+                  style: const TextStyle(fontSize: 28,),
                 ),
 
               // Weather condition
               Text(
                 _weather?.mainCondition ?? "",
-                style: const TextStyle(fontSize: 20),
+                style: const TextStyle(fontSize: 24),
               ),
+
+              // Current date and time
+              if (_weather != null)
+                const DateTimeWidget(),
             ],
           ),
         ),
